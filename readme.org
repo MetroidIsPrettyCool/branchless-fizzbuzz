@@ -1,0 +1,37 @@
+* What's the deal?
+This is a pretty simple implementation of 'FizzBuzz' in Linux x64 assembly. It contains no jump instructions (not in the
+binary, anyway) and implements all logic via lookup tables and an ingenious little algorithm borrowed from
+http://philcrissman.net/posts/eulers-fizzbuzz/, which immediately captured my attention the moment I heard of it. It's
+such an elegant idea!
+
+There are two reasons I decided to implement this in assembly:
+
+1. I have very little x64 assembly experience, so I wanted to write more small but non-trivial (well, /less/ trivial)
+   programs to experiment with style, continue to familiarize myself with the Intel developer's guide, and the NASM
+   documentation.
+
+   You may notice, for example, that I've adopted a sort of "Hungarianesque" notation for my labels --
+   the result of which is kind of ugly and uncoordinated. That's the sort of kink I'd like to work on or out of my
+   workflow before ever moving onto bigger things.
+
+   Also overused is the ~align~ directives in the ~.data~ ~section~. Those are only there because I was curious how one
+   might align to a boundary in NASM.
+2. Attempting to implement the conditional logic-less algorithm in a language like C or Python or Ada or Bash or what
+   have you strikes me as cheating. The whole point of this is to avoid branching! Even C doesn't give us enough
+   control. Too many opportunities for glibc or the CRT0 to get statically linked and introduce unwanted instructions
+   into our otherwise pure binary.
+
+   Furthermore, standard C doesn't really have any good code-repeat macros, and ~for~/~while~ loops are unquestionably
+   branches. Infinite goto loops are fine, but I wanted the program to halt on its own so as not to fill up my eshell
+   buffer too quickly and hang my editor. (That's a cop-out but I'm sticking to it.)
+* Building
+Type ~make~, ~make all~ or ~make branchless-fizzbuzz~ in the top (well, only) folder of the repo to build the
+executable, run it with ~./branchless-fizzbuzz~. Requires NASM, ld and cpp.
+
+To remove all build products, type ~make clean~.
+* Potential Further Improvements
+1. Remove the leading zeroes from numbers. Could probably be implemented pretty easy with another lookup table.
+2. Settle on and standardize a saner name format for labels.
+3. Remove various bits of redundancy.
+4. Clean up makefile. It was a hack job just to get the thing to build, and it's not up my personal standards.
+5. Further extensibility to other prime number-word associations. (Compiler, anyone?)
