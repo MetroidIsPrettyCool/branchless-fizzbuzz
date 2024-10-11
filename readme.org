@@ -35,3 +35,13 @@ To remove all build products, type ~make clean~.
 3. Remove various bits of redundancy.
 4. Clean up makefile. It was a hack job just to get the thing to build, and it's not up my personal standards.
 5. Further extensibility to other prime number-word associations. (Compiler, anyone?)
+* Other Notes
+Yes, I know that under the ~syscall~ API there are undoubtedly hundreds of thousands of branches. How else do you expect
+me to do output.
+
+Moreover, if you're running an modern Intel x64 computer -- heck, if you've got a modern Intel x64 machine /plugged in/
+-- you've already got a MINIX 3 install running in your chipset, which is executing plenty of branches per second
+without your input or consent. AMD is similar with their ARM-based PSP.
+
+Modern computers are abominations of science. Let me live in a little space of delusion for a while, where I can pretend
+it's the 70s, that I'm writing single-threaded 8086 machine code and microprocessors are still /real./
