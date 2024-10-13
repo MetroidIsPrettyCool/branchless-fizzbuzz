@@ -36,4 +36,5 @@ To remove all build products, type ~make clean~.
 4. Further extensibility to other prime number-word associations. (Compiler, anyone?)
 * Other Notes
 Yes, I know that under the ~syscall~ API there are undoubtedly hundreds of thousands of branches. How else do you expect
-me to do output. (Return values maybe? IDK how you'd do strings.)
+me to do output. (Return values maybe? IDK how you'd do strings.) All I was /really/ aiming for was no branches in
+/userspace,/ and this works well enough.
