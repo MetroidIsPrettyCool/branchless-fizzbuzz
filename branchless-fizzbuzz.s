@@ -6,50 +6,48 @@
 %define SYS_WRITE 1
 %define SYS_EXIT 60
 %define STDOUT_FILENO 1
-%define NEWLINE 10
+%define LF 10
 %define QWORD_SIZE 8
 
 section .rodata
+        ; "Fizz\n"
 align 16, db 0
+str_fizz: db "Fizz", LF
+LEN_FIZZ: equ $ - str_fizz
 
-str_fizz: db "Fizz", NEWLINE    ; "Fizz\n"
-len_fizz: equ $-str_fizz
-
+        ; "Buzz\n"
 align 16, db 0
+str_buzz: db "Buzz", LF
+LEN_BUZZ: equ $ - str_buzz
 
-str_buzz: db "Buzz", NEWLINE    ; "Buzz\n"
-len_buzz: equ $-str_buzz
-
+        ; "FizzBuzz\n"
 align 16, db 0
+str_fizzbuzz: db "FizzBuzz", LF
+LEN_FIZZBUZZ: equ $ - str_fizzbuzz
 
-str_fizzbuzz: db "FizzBuzz", NEWLINE ; "FizzBuzz\n"
-len_fizzbuzz: equ $-str_fizzbuzz
-
+        ; lookup table for the decimal digits 0-9 to determine if they're ~0~ or not.
 align 16, db 0
-
-byte_array_digit_is_0: db 1, 9 dup (0)
+byte_array_digit_is_0: db 1, 9 dup(0)
 
 
 section .data
-align 16, db 0
-
 %define NUM_DIGITS 20           ; $\lciel \log_{10} (2^{64} - 1) \rciel$ = 20 -- the maximum possible string length of a
                                 ; 64-bit number in base 10
 
-str_itoa_result: db NUM_DIGITS dup (0), NEWLINE ; buffer for writing the result of func_itoa to
-len_itoa_result_max: equ $-str_itoa_result      ; length of said buffer + the newline
-
+        ; buffer for writing the result of func_itoa to
 align 16, db 0
+str_itoa_result: db NUM_DIGITS dup(0), LF
+ITOA_RESULT_BUFFER_SIZE: equ $-str_itoa_result
 
         ; array of qwords containing the lengths of ~str_fizz~, ~str_buzz~, ~str_fizzbuzz~, and
         ; ~str_itoa_result~. ~len_itoa_result~ is an alias for ~int_array_lengths[1]~.
-int_array_lengths: dq len_fizzbuzz, len_itoa_result_max, 0, 0, 0, 0, len_fizz, 0, 0, 0, len_buzz
-len_itoa_result: equ int_array_lengths + QWORD_SIZE
-
 align 16, db 0
+int_array_lengths: dq LEN_FIZZBUZZ, ITOA_RESULT_BUFFER_SIZE, 0, 0, 0, 0, LEN_FIZZ, 0, 0, 0, LEN_BUZZ
+len_itoa_result: equ int_array_lengths + QWORD_SIZE
 
         ; array of pointers (qwords) to the strings ~str_fizz~, ~str_buzz~, ~str_fizzbuzz~ and
         ; ~str_itoa_result~. str_ptr_to_itoa_result is an alias for ~str_array_strings[1]~.
+align 16, db 0
 str_array_strings: dq str_fizzbuzz, str_itoa_result, 0, 0, 0, 0, str_fizz, 0, 0, 0, str_buzz
 str_ptr_to_itoa_result: equ str_array_strings + QWORD_SIZE
 
@@ -142,7 +140,7 @@ func_itoa:
         ; and symbol defines.
         mov rdx, 1              ; store if all previous bytes have been '0'
         mov rdi, str_itoa_result ; pointer to the start of the string
-        mov rsi, len_itoa_result_max ; length of the string
+        mov rsi, ITOA_RESULT_BUFFER_SIZE ; length of the string
 
         ; iterate through ~str_itoa_result~, decrementing the length and incrementing the start pointer for every
         ; leading '0'.
