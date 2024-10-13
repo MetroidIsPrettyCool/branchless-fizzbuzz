@@ -113,8 +113,9 @@ func_fizzorbuzzorbothorneither:
         ;
         ; arguments: rcx - unsigned number to convert from integer to string
         ;
-        ; results: str_itoa_result - string representation of rcx, int_array_lengths[1] (AKA len_itoa_result) - length
-        ; of the string, str_array_strings[1] (AKA str_ptr_to_itoa_result) - pointer to the start of str_itoa_result
+        ; results: str_itoa_result - string representation of rcx (zero-padded), int_array_lengths[1] (AKA
+        ; len_itoa_result) - length of the string (w/o zero-padding), str_array_strings[1] (AKA str_ptr_to_itoa_result)
+        ; - pointer to the start of the string (w/o zero-padding)
         ;
         ; clobbers: rax, rdx, rdi, rsi, str_itoa_result, int_array_lengths[1], str_array_strings[1]
 func_itoa:
