@@ -8,8 +8,8 @@ There are two reasons I decided to implement this in assembly:
 
 1. Attempting to implement the conditional logic-less algorithm in a language like C or Python or Ada or Bash or what
    have you strikes me as cheating. The whole point of this is to avoid branching! Even C doesn't give us enough
-   control. Too many opportunities for glibc or the CRT0 to get statically linked and introduce unwanted instructions
-   into our otherwise pure binary.
+   control. Too many opportunities for glibc or CRT0.o to get statically linked and introduce unwanted instructions into
+   our otherwise "pure" binary.
 
    Furthermore, standard C doesn't really have any good code-repeat macros, and ~for~​/​~while~ loops are unquestionably
    branches. Infinite goto loops are fine, but I wanted the program to halt on its own so as not to fill up my eshell
@@ -30,7 +30,7 @@ executable. Requires NASM, ld and make. ~./branchless-fizzbuzz~ will run the bin
 Running ~./quick-regression-test.sh~ will compare the output to a file called ~expected.txt~ and report "regression!" if
 they're different, else "no regression".
 
-To remove all build products, type ~make clean~. To remove all build products and the binary, type ~make pristine~.
+To remove all build products, run ~make clean~. To remove all build products and the binary, run ~make pristine~.
 * Potential Further Improvements
 1. Settle on and standardize a saner name format for labels.
 2. Remove various bits of redundancy.
