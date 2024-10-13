@@ -1,5 +1,8 @@
 ; -*- mode: nasm; -*-
 
+%define START_NUM 1
+%define END_NUM 1000
+
 %define SYS_WRITE 1
 %define SYS_EXIT 60
 %define STDOUT_FILENO 1
@@ -47,11 +50,11 @@ section .text
 
 global _start
 _start:
-        mov rcx, 1
+        mov rcx, START_NUM
 
         ; main loop
         call func_fizzorbuzzorbothorneither
-%rep 999
+%rep END_NUM - START_NUM
         inc rcx
         call func_fizzorbuzzorbothorneither
 %endrep
@@ -121,7 +124,10 @@ func_itoa:
 
         ; determine the /actual/ length of the string (w/o any of the zero-padding)
         ;
-        ; it'd be far easier to just precompute these offsets but I think that's cheating.
+        ; it'd be far easier to just precompute these offsets but I think that's cheating. Like at that point why not
+        ; just do all the fizzbuzz stuff in the preprocessor and create a binary that's just one big ~write~ syscall and
+        ; an array of text. Or heck just a text file. No thank you. I will limit my use of the preprocessor to rep loops
+        ; and symbol defines.
         mov rdx, 1              ; store if all previous bytes have been '0'
         mov rdi, str_itoa_result ; pointer to the start of the string
         mov rsi, len_itoa_result_max ; length of the string
