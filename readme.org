@@ -1,34 +1,36 @@
 * What's the deal?
 This is a pretty simple implementation of 'FizzBuzz' in Linux x64 assembly. It contains no jump instructions (not in the
 binary, anyway) and implements all logic via lookup tables and an ingenious little algorithm borrowed from
-http://philcrissman.net/posts/eulers-fizzbuzz/, which immediately captured my attention the moment I heard of it. It's
-such an elegant idea!
+http://philcrissman.net/posts/eulers-fizzbuzz/, which immediately captured my attention the moment I started reading
+it. It's such an elegant idea!
 
 There are two reasons I decided to implement this in assembly:
 
-1. I have very little x64 assembly experience, so I wanted to write more small but non-trivial (well, /less/ trivial)
-   programs to experiment with style, continue to familiarize myself with the Intel developer's guide, and the NASM
-   documentation.
-
-   You may notice, for example, that I've adopted a sort of "Hungarianesque" notation for my labels --
-   the result of which is kind of ugly and uncoordinated. That's the sort of kink I'd like to work on or out of my
-   workflow before ever moving onto bigger things.
-
-   Also overused is the ~align~ directives in the ~.data~ ~section~. Those are only there because I was curious how one
-   might align to a boundary in NASM.
-2. Attempting to implement the conditional logic-less algorithm in a language like C or Python or Ada or Bash or what
+1. Attempting to implement the conditional logic-less algorithm in a language like C or Python or Ada or Bash or what
    have you strikes me as cheating. The whole point of this is to avoid branching! Even C doesn't give us enough
    control. Too many opportunities for glibc or the CRT0 to get statically linked and introduce unwanted instructions
    into our otherwise pure binary.
 
    Furthermore, standard C doesn't really have any good code-repeat macros, and ~for~​/​~while~ loops are unquestionably
    branches. Infinite goto loops are fine, but I wanted the program to halt on its own so as not to fill up my eshell
-   buffer too quickly and hang my editor. (That one's a cop-out but I'm sticking to it.)
-* Building
-Type ~make~, ~make all~ or ~make branchless-fizzbuzz~ in the top (well, only) folder of the repo to build the
-executable, run it with ~./branchless-fizzbuzz~. Requires NASM, ld and cpp.
+   buffer too quickly and hang my editor. (Yeah it's a cop-out but I'm sticking to it.)
+2. I have very little x64 assembly experience, so I wanted to write more small but non-trivial (well, /less/ trivial)
+   programs to experiment with style, continue to familiarize myself with the Intel developer's guide, and the NASM
+   documentation.
 
-To remove all build products, type ~make clean~.
+   You may notice, for example, that I've adopted a sort of "Hungarianesque" notation for my labels -- the result of
+   which is kind of ugly and uncoordinated. Better to know 'cause you've tried it than not!
+
+   I've also overused ~align~ directives in ~.data~ and ~.rodata~. Those are there entirely because I hadn't used
+   ~align~ before and wanted to tinker with it a little.
+* Building
+Run ~make~, ~make all~ or ~make branchless-fizzbuzz~ in the top (well, only) folder of the repo to build the
+executable. Requires NASM, ld and cpp. ~./branchless-fizzbuzz~ will run the binary.
+
+Running ~./quick-regression-test.sh~ will compare the output to a file called ~expected.txt~ and report "regression!" if
+they're different, else "no regression".
+
+To remove all build products, type ~make clean~. To remove all build products and the binary, type ~make pristine~.
 * Potential Further Improvements
 1. Settle on and standardize a saner name format for labels.
 2. Remove various bits of redundancy.
@@ -37,4 +39,4 @@ To remove all build products, type ~make clean~.
 * Other Notes
 Yes, I know that under the ~syscall~ API there are undoubtedly hundreds of thousands of branches. How else do you expect
 me to do output. (Return values maybe? IDK how you'd do strings.) All I was /really/ aiming for was no branches in
-/userspace,/ and this works well enough.
+userspace, and this works well enough.
