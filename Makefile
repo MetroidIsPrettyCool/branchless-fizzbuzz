@@ -1,6 +1,3 @@
-CPP = cpp
-# CPPFLAGS = -isystem /usr/include/asm/
-
 AS = nasm
 ASFLAGS = -f elf64 -gdwarf
 
@@ -16,8 +13,5 @@ branchless-fizzbuzz: branchless-fizzbuzz.o
 branchless-fizzbuzz.o: branchless-fizzbuzz.s
 	$(AS) $(ASFLAGS) $^ -o $@
 
-branchless-fizzbuzz.s: branchless-fizzbuzz.S
-	$(CPP) $(CPPFLAGS) $^ > $@
-
 clean:
-	rm -f branchless-fizzbuzz branchless-fizzbuzz.o branchless-fizzbuzz.s
+	rm -f branchless-fizzbuzz branchless-fizzbuzz.o

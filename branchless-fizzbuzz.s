@@ -1,14 +1,14 @@
 ; -*- mode: nasm; -*-
 
-#include <asm/unistd.h>
-
+%define SYS_WRITE 1
+%define SYS_EXIT 60
 %define STDOUT_FILENO 1
 %define NEWLINE 10
 
 section .data
 align 16, db 0
 
-%define NUM_DIGITS 2            ; number of digits to use to represent numbers
+%define NUM_DIGITS 3            ; number of digits to use to represent numbers
 
 str_itoa_result: db NUM_DIGITS dup (0), NEWLINE
 len_itoa_result: equ $-str_itoa_result
@@ -44,13 +44,13 @@ _start:
 
         ; main loop
         call func_fizzorbuzzorbothorneither
-%rep 99
+%rep 999
         inc rcx
         call func_fizzorbuzzorbothorneither
 %endrep
 
         ; exit
-        mov rax, __NR_exit
+        mov rax, SYS_EXIT
         xor rdi, rdi
         syscall
 
@@ -80,7 +80,7 @@ func_fizzorbuzzorbothorneither:
         mov rsi, [rdx * 8 + str_array_strs]
         mov rdx, [rdx * 8 + ptr_array_lengths]
 
-        mov rax, __NR_write
+        mov rax, SYS_WRITE
         mov rdi, STDOUT_FILENO
 
         syscall
