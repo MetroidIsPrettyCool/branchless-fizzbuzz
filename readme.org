@@ -23,7 +23,7 @@ There are two reasons I decided to implement this in assembly:
 
    Furthermore, standard C doesn't really have any good code-repeat macros, and ~for~​/​~while~ loops are unquestionably
    branches. Infinite goto loops are fine, but I wanted the program to halt on its own so as not to fill up my eshell
-   buffer too quickly and hang my editor. (That's a cop-out but I'm sticking to it.)
+   buffer too quickly and hang my editor. (That one's a cop-out but I'm sticking to it.)
 * Building
 Type ~make~, ~make all~ or ~make branchless-fizzbuzz~ in the top (well, only) folder of the repo to build the
 executable, run it with ~./branchless-fizzbuzz~. Requires NASM, ld and cpp.
@@ -36,7 +36,7 @@ To remove all build products, type ~make clean~.
 4. Further extensibility to other prime number-word associations. (Compiler, anyone?)
 * Other Notes
 Yes, I know that under the ~syscall~ API there are undoubtedly hundreds of thousands of branches. How else do you expect
-me to do output.
+me to do output. (Return values maybe? IDK how you'd do strings.)
 
 Moreover, if you're running an modern Intel x64 computer -- heck, if you've got a modern Intel x64 machine /plugged in/
 -- you've already got a MINIX 3 install running in your chipset, which is executing plenty of branches per second
