@@ -25,6 +25,10 @@ align 16, db 0
 str_fizzbuzz: db "FizzBuzz", NEWLINE ; "FizzBuzz\n"
 len_fizzbuzz: equ $-str_fizzbuzz
 
+align 16, db 0
+
+byte_array_digit_is_0: db 1, 9 dup (0)
+
 
 section .data
 align 16, db 0
@@ -48,10 +52,6 @@ align 16, db 0
         ; ~str_itoa_result~. str_ptr_to_itoa_result is an alias for ~str_array_strings[1]~.
 str_array_strings: dq str_fizzbuzz, str_itoa_result, 0, 0, 0, 0, str_fizz, 0, 0, 0, str_buzz
 str_ptr_to_itoa_result: equ str_array_strings + QWORD_SIZE
-
-align 16, db 0
-
-byte_array_digit_is_0: db 1, 9 dup (0)
 
 
 section .text
