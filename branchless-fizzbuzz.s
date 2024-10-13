@@ -1,4 +1,4 @@
-; -*- mode: nasm; -*-
+;; -*- mode: nasm; -*-
 
 %define START_NUM 1
 %define END_NUM 1000
@@ -10,43 +10,43 @@
 %define QWORD_SIZE 8
 
 section .rodata
-        ; "Fizz\n"
+;; "Fizz\n"
 align 16, db 0
 str_fizz: db "Fizz", LF
 LEN_FIZZ: equ $ - str_fizz
 
-        ; "Buzz\n"
+;; "Buzz\n"
 align 16, db 0
 str_buzz: db "Buzz", LF
 LEN_BUZZ: equ $ - str_buzz
 
-        ; "FizzBuzz\n"
+;; "FizzBuzz\n"
 align 16, db 0
 str_fizzbuzz: db "FizzBuzz", LF
 LEN_FIZZBUZZ: equ $ - str_fizzbuzz
 
-        ; lookup table for the decimal digits 0-9 to determine if they're ~0~ or not.
+;; lookup table for the decimal digits 0-9 to determine if they're ~0~ or not.
 align 16, db 0
 byte_array_digit_is_0: db 1, 9 dup(0)
 
 
 section .data
-%define NUM_DIGITS 20           ; $\lciel \log_{10} (2^{64} - 1) \rciel$ = 20 -- the maximum possible string length of a
-                                ; 64-bit number in base 10
+;; $\lciel \log_{10} (2^{64} - 1) \rciel$ = 20 -- the maximum possible string length of a 64-bit number in base 10
+%define NUM_DIGITS 20
 
-        ; buffer for writing the result of func_itoa to
+;; buffer for writing the result of func_itoa to
 align 16, db 0
 str_itoa_result: db NUM_DIGITS dup(0), LF
 ITOA_RESULT_BUFFER_SIZE: equ $-str_itoa_result
 
-        ; array of qwords containing the lengths of ~str_fizz~, ~str_buzz~, ~str_fizzbuzz~, and
-        ; ~str_itoa_result~. ~len_itoa_result~ is an alias for ~int_array_lengths[1]~.
+;; array of qwords containing the lengths of ~str_fizz~, ~str_buzz~, ~str_fizzbuzz~, and
+;; ~str_itoa_result~. ~len_itoa_result~ is an alias for ~int_array_lengths[1]~.
 align 16, db 0
 int_array_lengths: dq LEN_FIZZBUZZ, ITOA_RESULT_BUFFER_SIZE, 0, 0, 0, 0, LEN_FIZZ, 0, 0, 0, LEN_BUZZ
 len_itoa_result: equ int_array_lengths + QWORD_SIZE
 
-        ; array of pointers (qwords) to the strings ~str_fizz~, ~str_buzz~, ~str_fizzbuzz~ and
-        ; ~str_itoa_result~. str_ptr_to_itoa_result is an alias for ~str_array_strings[1]~.
+;; array of pointers (qwords) to the strings ~str_fizz~, ~str_buzz~, ~str_fizzbuzz~ and
+;; ~str_itoa_result~. str_ptr_to_itoa_result is an alias for ~str_array_strings[1]~.
 align 16, db 0
 str_array_strings: dq str_fizzbuzz, str_itoa_result, 0, 0, 0, 0, str_fizz, 0, 0, 0, str_buzz
 str_ptr_to_itoa_result: equ str_array_strings + QWORD_SIZE
@@ -71,14 +71,14 @@ _start:
         syscall
 
 
-        ; Takes a number and prints "Fizz" if it's divisible by 3, or "Buzz" if it's divisible by 5, or "FizzBuzz" if
-        ; it's divisible by 15, or else prints the number
-        ;
-        ; arguments: rcx - number to determine if it's fizz or buzz or both or neither
-        ;
-        ; results: none
-        ;
-        ; clobbers: rax, rdx, rdi, rsi
+;; Takes a number and prints "Fizz" if it's divisible by 3, or "Buzz" if it's divisible by 5, or "FizzBuzz" if it's
+;; divisible by 15, or else prints the number
+;;
+;; arguments: rcx - number to determine if it's fizz or buzz or both or neither
+;;
+;; results: none
+;;
+;; clobbers: rax, rdx, rdi, rsi
 func_fizzorbuzzorbothorneither:
         push rcx                ; preserve rcx so as not to clobber it. I typically prefer to save registers from the
                                 ; caller, but that'd inflate my binary something tremendous if I did it here.
@@ -107,17 +107,18 @@ func_fizzorbuzzorbothorneither:
         ret
 
 
-        ; Converts an integer into a string (not null-terminated)
-        ;
-        ; arguments: rcx - unsigned number to convert from integer to string
-        ;
-        ; results: str_itoa_result - string representation of rcx (zero-padded), int_array_lengths[1] (AKA
-        ; len_itoa_result) - length of the string (w/o zero-padding), str_array_strings[1] (AKA str_ptr_to_itoa_result)
-        ; - pointer to the start of the string (w/o zero-padding)
-        ;
-        ; clobbers: rax, rdx, rdi, rsi, str_itoa_result, int_array_lengths[1], str_array_strings[1]
+;; Converts an integer into a string (not null-terminated)
+;;
+;; arguments: rcx - unsigned number to convert from integer to string
+;;
+;; results: str_itoa_result - string representation of rcx (zero-padded), int_array_lengths[1] (AKA len_itoa_result) -
+;; length of the string (w/o zero-padding), str_array_strings[1] (AKA str_ptr_to_itoa_result) - pointer to the start of
+;; the string (w/o zero-padding)
+;;
+;; clobbers: rax, rdx, rdi, rsi, str_itoa_result, int_array_lengths[1], str_array_strings[1]
 func_itoa:
-        ; perform conversion
+        ; 1. perform conversion
+
         mov rdi, 10             ; to be held constant for the duration of the subroutine
 
         mov rax, rcx
@@ -132,12 +133,12 @@ func_itoa:
 %assign i i-1
 %endrep
 
-        ; determine the /actual/ length of the string (w/o any of the zero-padding)
+        ; 2. determine the /actual/ length of the string (w/o any of the zero-padding)
         ;
-        ; it'd be far easier to just precompute these offsets but I think that's cheating. Like at that point why not
+        ; It'd be far easier to just precompute these offsets, but I think that's cheating. Like, at that point why not
         ; just do all the fizzbuzz stuff in the preprocessor and create a binary that's just one big ~write~ syscall and
-        ; an array of text. Or heck just a text file. No thank you. I will limit my use of the preprocessor to rep loops
-        ; and symbol defines.
+        ; an array of text? Or heck, just a text file. No thank you. I'll limit myself to rep loops and symbol defines.
+
         mov rdx, 1              ; store if all previous bytes have been '0'
         mov rdi, str_itoa_result ; pointer to the start of the string
         mov rsi, ITOA_RESULT_BUFFER_SIZE ; length of the string
