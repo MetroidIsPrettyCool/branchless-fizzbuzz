@@ -39,4 +39,4 @@ To remove all build products, type ~make clean~. To remove all build products an
 * Other Notes
 Yes, I know that under the ~syscall~ API there are undoubtedly hundreds of thousands of branches. How else do you expect
 me to do output. (Return values maybe? IDK how you'd do strings.) All I was /really/ aiming for was no branches in
-userspace, and this works well enough.
+userspace, and this accomplishes that.
