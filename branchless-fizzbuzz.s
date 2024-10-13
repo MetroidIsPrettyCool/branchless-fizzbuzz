@@ -44,7 +44,7 @@ str_ptr_to_itoa_result: dq str_itoa_result, 0, 0, 0, 0, str_fizz, 0, 0, 0, str_b
 
 align 16, db 0
 
-byte_array_is_0: db 1, 0, 0, 0, 0, 0, 0, 0, 0, 0
+byte_array_digit_is_0: db 1, 9 dup (0)
 
 section .text
 
@@ -136,8 +136,7 @@ func_itoa:
 %assign i 0
 %rep NUM_DIGITS
         movzx rax, byte [str_itoa_result + i]
-        sub rax, '0'
-        movzx rax, byte [rax + byte_array_is_0]
+        movzx rax, byte [rax + byte_array_digit_is_0 - '0']
         and rdx, rax
         add rdi, rdx
         sub rsi, rdx
