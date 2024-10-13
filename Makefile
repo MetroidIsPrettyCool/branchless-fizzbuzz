@@ -3,7 +3,7 @@ ASFLAGS = -f elf64 -gdwarf
 
 LD = ld
 
-.PHONY: all
+.PHONY: all clean
 
 all: branchless-fizzbuzz
 
