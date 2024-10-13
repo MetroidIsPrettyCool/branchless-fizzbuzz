@@ -21,7 +21,7 @@ There are two reasons I decided to implement this in assembly:
    control. Too many opportunities for glibc or the CRT0 to get statically linked and introduce unwanted instructions
    into our otherwise pure binary.
 
-   Furthermore, standard C doesn't really have any good code-repeat macros, and ~for~/~while~ loops are unquestionably
+   Furthermore, standard C doesn't really have any good code-repeat macros, and ~for~​/​~while~ loops are unquestionably
    branches. Infinite goto loops are fine, but I wanted the program to halt on its own so as not to fill up my eshell
    buffer too quickly and hang my editor. (That's a cop-out but I'm sticking to it.)
 * Building
@@ -30,11 +30,10 @@ executable, run it with ~./branchless-fizzbuzz~. Requires NASM, ld and cpp.
 
 To remove all build products, type ~make clean~.
 * Potential Further Improvements
-1. Remove the leading zeroes from numbers. Could probably be implemented pretty easy with another lookup table.
-2. Settle on and standardize a saner name format for labels.
-3. Remove various bits of redundancy.
-4. Clean up makefile. It was a hack job just to get the thing to build, and it's not up my personal standards.
-5. Further extensibility to other prime number-word associations. (Compiler, anyone?)
+1. Settle on and standardize a saner name format for labels.
+2. Remove various bits of redundancy.
+3. Clean up makefile. It was a hack job just to get the thing to build, and it's not up my personal standards.
+4. Further extensibility to other prime number-word associations. (Compiler, anyone?)
 * Other Notes
 Yes, I know that under the ~syscall~ API there are undoubtedly hundreds of thousands of branches. How else do you expect
 me to do output.

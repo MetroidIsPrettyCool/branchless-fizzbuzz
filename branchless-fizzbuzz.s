@@ -8,10 +8,11 @@
 section .data
 align 16, db 0
 
-%define NUM_DIGITS 3            ; number of digits to use to represent numbers
+%define NUM_DIGITS 20           ; $\lciel \log_{10} (2^{64} - 1) \rciel$ = 20 -- the maximum possible string length of a
+                                ; 64-bit number in base 10
 
 str_itoa_result: db NUM_DIGITS dup (0), NEWLINE
-len_itoa_result: equ $-str_itoa_result
+len_itoa_result_max: equ $-str_itoa_result
 
 align 16, db 0
 
@@ -30,11 +31,17 @@ len_fizzbuzz: equ $-str_fizzbuzz
 
 align 16, db 0
 
-ptr_array_lengths: dq len_fizzbuzz, len_itoa_result, 0, 0, 0, 0, len_fizz, 0, 0, 0, len_buzz
+int_array_lengths: dq len_fizzbuzz
+len_itoa_result:   dq len_itoa_result_max, 0, 0, 0, 0, len_fizz, 0, 0, 0, len_buzz
 
 align 16, db 0
 
-str_array_strs: dq str_fizzbuzz, str_itoa_result, 0, 0, 0, 0, str_fizz, 0, 0, 0, str_buzz
+str_array_strs:         dq str_fizzbuzz
+str_ptr_to_itoa_result: dq str_itoa_result, 0, 0, 0, 0, str_fizz, 0, 0, 0, str_buzz
+
+align 16, db 0
+
+byte_array_is_0: db 1, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 section .text
 
@@ -78,7 +85,7 @@ func_fizzorbuzzorbothorneither:
         div rdi                 ; remainder in RDX
 
         mov rsi, [rdx * 8 + str_array_strs]
-        mov rdx, [rdx * 8 + ptr_array_lengths]
+        mov rdx, [rdx * 8 + int_array_lengths]
 
         mov rax, SYS_WRITE
         mov rdi, STDOUT_FILENO
@@ -93,34 +100,45 @@ func_fizzorbuzzorbothorneither:
         ;
         ; arguments: rcx - unsigned number to convert from integer to string
         ;
-        ; results: str_itoa_result - string representation of rcx, rsi - pointer to str_itoa_result (to align with
-        ; ~write~)
+        ; results: str_itoa_result - string representation of rcx, int_array_lengths[1] (AKA len_itoa_result) - length
+        ; of the string, str_array_strs[1] (AKA str_ptr_to_itoa_result) - pointer to the start of str_itoa_result
         ;
-        ; clobbers: rax, rdx, rsi, rdi
+        ; clobbers: rax, rdx, rdi, rsi, str_itoa_result, int_array_lengths[1], str_array_strs[1]
 func_itoa:
-        push rcx
-
-        ; setup
-        mov rsi, str_itoa_result
-
+        ; perform conversion
         mov rdi, 10             ; to be held constant for the duration of the subroutine
 
         mov rax, rcx
 
 %define i NUM_DIGITS-1
-        ; division
+%rep NUM_DIGITS
         xor rdx, rdx
         div rdi                 ; div 10
         add rdx, '0'
         mov [i + str_itoa_result], dl
-%rep NUM_DIGITS-1
 %assign i i-1
-        xor rdx, rdx
-        div rdi                 ; div 10
-        add rdx, '0'
-        mov [i + str_itoa_result], dl
 %endrep
 
-        pop rcx
+        ; determine the /actual/ length of the string (w/o any of the zero-padding)
+        ;
+        ; it'd be far easier to just precompute these offsets but I think that's cheating.
+        mov rdx, 1              ; store if all previous bytes have been '0'
+        mov rdi, str_itoa_result ; pointer to the start of the string
+        mov rsi, len_itoa_result_max ; length of the string
+
+        ; loop
+%assign i 0
+%rep NUM_DIGITS
+        movzx rax, byte [str_itoa_result + i]
+        sub rax, '0'
+        movzx rax, byte [rax + byte_array_is_0]
+        and rdx, rax
+        add rdi, rdx
+        sub rsi, rdx
+%assign i i+1
+%endrep
+
+        mov [str_ptr_to_itoa_result], rdi
+        mov [len_itoa_result], rsi
 
         ret
