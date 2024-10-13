@@ -25,7 +25,7 @@ There are two reasons I decided to implement this in assembly:
    ~align~ before and wanted to tinker with it a little.
 * Building
 Run ~make~, ~make all~ or ~make branchless-fizzbuzz~ in the top (well, only) folder of the repo to build the
-executable. Requires NASM, ld and cpp. ~./branchless-fizzbuzz~ will run the binary.
+executable. Requires NASM, ld and make. ~./branchless-fizzbuzz~ will run the binary.
 
 Running ~./quick-regression-test.sh~ will compare the output to a file called ~expected.txt~ and report "regression!" if
 they're different, else "no regression".
