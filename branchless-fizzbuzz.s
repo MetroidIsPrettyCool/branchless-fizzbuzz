@@ -31,7 +31,7 @@ byte_array_digit_is_0: db 1, 9 dup(0)
 
 
 section .data
-;; $\lciel \log_{10} (2^{64} - 1) \rciel$ = 20 -- the maximum possible string length of a 64-bit number in base 10
+;; $\lceil \log_{10} (2^{64} - 1) \rceil$ = 20 -- the maximum possible string length of a 64-bit number in base 10
 %define NUM_DIGITS 20
 
 ;; buffer for writing the result of func_itoa to
