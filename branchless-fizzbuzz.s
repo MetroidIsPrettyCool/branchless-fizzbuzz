@@ -25,10 +25,6 @@ align 16, db 0
 str_fizzbuzz: db "FizzBuzz", LF
 LEN_FIZZBUZZ: equ $ - str_fizzbuzz
 
-;; lookup table for the decimal digits 0-9 to determine if they're ~0~ or not.
-align 16, db 0
-byte_array_digit_is_0: db 1, 9 dup(0)
-
 
 section .data
 ;; $\lceil \log_{10} (2^{64} - 1) \rceil$ = 20 -- the maximum possible string length of a 64-bit number in base 10
@@ -148,7 +144,7 @@ func_itoa:
 %assign i 0
 %rep NUM_DIGITS
         movzx rax, byte [str_itoa_result + i]
-        movzx rax, byte [rax + byte_array_digit_is_0 - '0']
+        call func_is_ascii_zero
         and rdx, rax
         add rdi, rdx
         sub rsi, rdx
@@ -159,4 +155,18 @@ func_itoa:
         mov [str_ptr_to_itoa_result], rdi
         mov [len_itoa_result], rsi
 
+        ret
+
+;; Returns 1 if ~rax~ == '0', else 0
+;;
+;; arguments: rax -- number to compare against
+;;
+;; returns: rax -- (rax == '0') ? 1 : 0
+;;
+;; clobbers: rax
+func_is_ascii_zero:
+        dec rax                 ; '0' - 1 = 0b00101111, all other ASCII digits have bit 4 set
+        and rax, 0b00010000     ; if rax was '0' rax is now 0b00000000, else 0b00010000
+        xor rax, 0b00010000     ; toggle that bit
+        shr rax, 4              ; 0b00010000 >> 4 == 1, 0b00000000 >> 4 == 0
         ret
