@@ -40,13 +40,13 @@ To remove all build products, run ~make clean~. To remove all build products and
 5. Further extensibility to other prime number-word associations. (Compiler, anyone?)
 * Other Notes
 Yes, I know that "branchless" is a misnomer here. This is not "branchless fizzbuzz" but instead
-"conditional-branches-in-userspace-less fizzbuzz" There are 2,000 ~call~ instructions, 2,000 ~ret~ instructions and
+"conditional-branches-in-userspace-less fizzbuzz" There are 3,000 ~call~ instructions, 3,000 ~ret~ instructions and
 1,001 ~syscall~ instructions in the assembled binary, and behind the x64 ~syscall~ API there are doubtless hundreds and
 thousands of conditional and unconditional branches going on in ring 0.
 
 FWIW: ~itoa~ could be trivially inlined, and ~fizzorbuzzorbothorneither~ (verbose on purpose, I thought it was funny)
 could be inlined without too much difficulty -- though doing so would inflate the resulting binary quite a bit (from
-20,776 to 91,936 bytes) -- which would leave us with only the ~syscall~​s.
+20,776 to 91,936 bytes as of my last test) -- which would leave us with only the ~syscall~​s.
 
 There is, to my knowledge, no way to do any kind of I/O in userspace without ~syscall~​s. We could batch our writes and
 reduce their number, but we can't eliminate them entirely.
